@@ -12,6 +12,7 @@ Preparado el 20 de octubre de 2026 para `https://voztexto.com`.
 - El audio de comprobación es una muestra pública de Google FLEURS `es_419`, no una grabación privada del usuario.
 - Sin solicitudes a AdSense, DoubleClick o Google Analytics en la prueba del editor.
 - Revisión visual de la portada y de su versión móvil.
+- Selector de idiomas integrado y botón Eliminar audio: pruebas de interfaz con audio sintético y worker simulado. Eliminar permite cargar el mismo archivo; el botón se desactiva durante el reconocimiento; cancelar conserva las ediciones y confirmar limpia la sesión. Menú comprobado a 390 y 1440 px, sin salirse de la ventana.
 - Apariencia clara y oscura: botón, preferencia guardada entre páginas públicas y editor, recarga, seguimiento del sistema sin elección previa y funcionamiento sin acceso al almacenamiento local.
 - Comprobación de apariencia en Chrome con archivos compilados servidos mediante interceptación local: anchos de 320 a 1440 px sin desbordamiento horizontal; cambiar el tema conserva la geometría de la portada. Capturas claras y oscuras en `docs/`.
 - Auditoría npm sin vulnerabilidades reportadas en la comprobación.

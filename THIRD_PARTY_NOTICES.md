@@ -13,3 +13,8 @@ VoxTexto tiene interfaz, organización y lógica de aplicación propias. No es u
 - DM Sans y Manrope: tipografía de la interfaz distribuida mediante Fontsource, SIL Open Font License 1.1.
 
 Las licencias completas de dependencias se incluyen en sus paquetes. Consulta `package-lock.json` para versiones exactas. Deben conservarse al distribuir los componentes correspondientes.
+
+
+## Electron (escritorio)
+
+La aplicación para Windows utiliza Electron (MIT). La carpeta portable conserva los archivos LICENSE y LICENSES.chromium.html de su distribución oficial. Código y avisos: https://github.com/electron/electron
