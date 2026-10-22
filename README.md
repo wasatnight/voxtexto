@@ -1,6 +1,6 @@
 # VoxTexto
 
-Versión 0.3.0. Configuración de publicación para `https://voztexto.com` (dominio de destino; despliegue público no verificado), con portada y guías estáticas, herramienta en `/app/`, sitemap y robots. La detección de idioma y la web instalable se conservan.
+Versión 0.4.2 (web y aplicación de escritorio). Configuración de publicación para `https://voztexto.com` (dominio de destino; despliegue público no verificado), con portada y guías estáticas, herramienta en `/app/`, sitemap y robots. La detección de idioma y la web instalable se conservan.
 
 **Dale espacio a tus palabras.** Una aplicación de transcripción local para convertir audio en texto, revisarlo y descargarlo. Interfaz y lógica de producto propias; reconocimiento de voz basado en Whisper Base mediante Transformers.js.
 
@@ -33,7 +33,24 @@ Para contribuir, consulta [CONTRIBUTING.md](CONTRIBUTING.md). Las comprobaciones
 - Texto editable por segmentos, marcas de tiempo, reproducción, salto al segmento y velocidad ajustable.
 - Exportaciones locales a TXT UTF-8, DOCX y PDF. Copiado al portapapeles.
 - Diseño adaptable, navegación con teclado, avisos accesibles y ejemplo de edición identificado explícitamente como demostración.
-- Contenedor Tauri para Windows y flujos de GitHub Actions para comprobar la web y construir un instalador bajo demanda.
+- Aplicación Electron para Windows: grabación de salida del sistema, micrófono opcional, pausa/reanudación y guardado local de audio.
+- Modo claro/oscuro, selector de idiomas accesible con teclado y barras de desplazamiento integradas.
+- Botón Eliminar audio para limpiar la sesión y volver a cargar otro archivo, con confirmación si hay contenido por descartar.
+
+## Escritorio para Windows
+
+Requiere Windows 10/11 de 64 bits. La primera descarga del modelo necesita internet; no se requieren cuentas de Google ni Microsoft.
+
+```powershell
+npm ci
+npm run desktop:dev
+```
+
+`npm run desktop:portable` genera `release/win-unpacked/`; conserva toda esa carpeta para ejecutar `VoxTexto.exe`. `npm run desktop:build` solicita un instalador NSIS. La firma digital de editor aún no está configurada. El flujo manual de GitHub Actions construye artefactos de prueba y no publica releases automáticamente.
+
+La app captura el audio de salida de Windows y opcionalmente el micrófono. Incluye sonidos de otras aplicaciones; no aísla automáticamente una reunión. La grabación se detiene cerca de los 60 minutos de audio activo. Avisa a quienes participen y guarda el audio o el texto antes de cerrar. Consulta [LEEME-ESCRITORIO.md](LEEME-ESCRITORIO.md) y [VALIDACION-ESCRITORIO.md](VALIDACION-ESCRITORIO.md).
+
+El límite, la mezcla, pausa/reanudación y el guardado se comprobaron con audio sintético; se probó reconocimiento de una muestra pública de español. Queda pendiente verificar llamadas reales y distintos dispositivos físicos.
 
 ## Privacidad
 
@@ -71,7 +88,7 @@ Para probarla desde un teléfono necesitas una dirección pública HTTPS. `127.0
 
 El procesamiento puede detenerse si el sistema suspende la app. Mantén la pantalla y la app activas para archivos largos; instalar la PWA no aporta más RAM ni procesamiento en segundo plano garantizado.
 
-El service worker no se registra en desarrollo ni dentro de Tauri. Una actualización espera su turno sin forzar recargas que destruyan texto no descargado.
+El service worker no se registra en desarrollo ni dentro de la app de escritorio. Una actualización espera su turno sin forzar recargas que destruyan texto no descargado.
 
 ## Validación
 
@@ -105,14 +122,15 @@ src/
   lib/transcript.ts          Validación y formato de texto
   lib/export.ts              Generación y guardado de documentos
   lib/pdf-pages.ts           PDF con fuentes del sistema
-src-tauri/                   Contenedor y permisos de escritorio
+electron/                    Ventana, permisos, captura loopback y diálogo de guardado
+src-tauri/                   Base anterior conservada como referencia
 tests/e2e/                   Pruebas de flujos en navegador
 .github/workflows/           Comprobaciones y compilación Windows
 ```
 
 ## Publicar la web y el código
 
-`npm run build` genera un sitio estático en `dist/`. Puede alojarse en un servicio estático que sirva correctamente JavaScript y WebAssembly por HTTPS. `base: './'` permite ubicarlo en una subcarpeta. No se incluye un backend ni claves API.
+`npm run build:hostinger` genera la web completa en `build/`, con portada, guías, editor en `/app/`, sitemap y robots. Ejecuta `npm run verify:hostinger` para comprobar los recursos y sigue [LEEME-HOSTINGER.md](LEEME-HOSTINGER.md). El comando `npm run build` genera únicamente el editor en `dist/`. No se incluye un backend ni claves API.
 
 Antes de anunciar una versión estable: validar la compilación Windows, probar otros navegadores y GPU reales, medir consumo y tiempo con archivos largos y revisar la exportación en los alfabetos que quieras destacar. Código del proyecto: [wasatnight/voxtexto](https://github.com/wasatnight/voxtexto). El repositorio publica código fuente; no implica un despliegue web ni un instalador validado.
 
@@ -120,4 +138,4 @@ Antes de anunciar una versión estable: validar la compilación Windows, probar 
 
 Código de la aplicación bajo [MIT](LICENSE). [Créditos y licencias de terceros](THIRD_PARTY_NOTICES.md). VoxTexto no es un producto oficial de OpenAI ni de Hugging Face y no atribuye como propio el entrenamiento de Whisper.
 
-El análisis de una posible integración de reuniones está en [REUNIONES.md](docs/REUNIONES.md); esta versión no incluye un bot de reuniones ni comienza grabaciones.
+El análisis de una posible integración de reuniones está en [REUNIONES.md](docs/REUNIONES.md); esta versión no incluye un bot de reuniones. La captura de Windows empieza únicamente al pulsar Grabar audio del sistema en la app de escritorio.

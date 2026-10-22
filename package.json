@@ -1,7 +1,7 @@
 {
   "name": "voxtexto",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.2",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
@@ -12,8 +12,10 @@
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "desktop:dev": "tauri dev",
-    "desktop:build": "tauri build"
+    "desktop:dev": "npm run build && electron .",
+    "desktop:build": "npm run build && node scripts/package-desktop.cjs",
+    "desktop:portable": "npm run build && node scripts/package-desktop.cjs --dir",
+    "test:desktop": "node scripts/check-desktop.mjs"
   },
   "dependencies": {
     "@fontsource/dm-sans": "^5.3.0",
@@ -36,9 +38,40 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.4",
+    "electron": "44.9.1",
+    "electron-builder": "26.15.3",
     "prettier": "^3.9.10",
     "typescript": "~5.9.3",
     "vite": "^7.1.10",
     "vitest": "^5.0.5"
+  },
+  "main": "electron/main.cjs",
+  "description": "VoxTexto para Windows: grabación y transcripción local.",
+  "author": "VoxTexto",
+  "build": {
+    "appId": "dev.voxtexto.desktop",
+    "nsis": {
+      "artifactName": "VoxTexto-Setup-${version}.exe",
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "oneClick": false
+    },
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "productName": "VoxTexto",
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "public/icons/icon-512.png",
+      "signExecutable": false
+    }
   }
 }
